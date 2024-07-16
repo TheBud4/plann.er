@@ -1,0 +1,4 @@
+node_modules
+
+#Keeping the enviroment variables for educational purposes
+#.env
