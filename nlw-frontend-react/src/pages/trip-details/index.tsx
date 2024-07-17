@@ -17,6 +17,7 @@ export function TripDetailsPage() {
     setIsCreateActivityModalOpen(false);
   }
 
+
   return (
     <div className="max-w-6xl py-10 mx-auto space-y-8">
       <DestinationAndDateHeader />
