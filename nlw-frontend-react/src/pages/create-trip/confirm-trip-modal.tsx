@@ -1,12 +1,18 @@
-import { X, User } from "lucide-react";
+import { X, User, Loader2 } from "lucide-react";
 import { FormEvent } from "react";
 import { Button } from "../../components/button";
+import { DateRange } from "react-day-picker";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface ConfirmTripModalProps {
   closeConfirmTripModal: () => void;
   createTrip: (event: FormEvent<HTMLFormElement>) => void;
   setOwnerName: (name: string) => void;
   setOwnerEmail: (email: string) => void;
+  loading: boolean;
+  destination: string;
+  eventStartAndEndDate: DateRange | undefined;
 }
 
 export function ConfirmTripModal({
@@ -14,7 +20,24 @@ export function ConfirmTripModal({
   createTrip,
   setOwnerName,
   setOwnerEmail,
+  loading,
+  destination,
+  eventStartAndEndDate,
 }: ConfirmTripModalProps) {
+
+const displayedDate =
+  eventStartAndEndDate && eventStartAndEndDate.from && eventStartAndEndDate.to
+    ? format(eventStartAndEndDate.from, "d ' de ' LLL", { locale: ptBR })
+        .concat(" até ")
+        .concat(
+          format(eventStartAndEndDate.to, "d ' de ' LLL", { locale: ptBR })
+        )
+        .concat(
+          format(eventStartAndEndDate.to, " ' de ' yyyy", { locale: ptBR })
+        )
+    : null;
+
+
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center ">
       <div className="w-[640px] rounded-xl py-5 px-6 shadow-shape bg-zinc-900 space-y-5">
@@ -29,12 +52,10 @@ export function ConfirmTripModal({
           </div>
           <p className="text-sm text-zinc-400">
             Para concluir a criação da viagem para{" "}
-            <span className="text-zinc-100 font-semibold">
-              Florianópolis, Brasil
-            </span>{" "}
+            <span className="text-zinc-100 font-semibold">{destination}</span>{" "}
             nas datas de{" "}
             <span className="text-zinc-100 font-semibold">
-              16 a 27 de Agosto de 2024
+              {displayedDate}
             </span>{" "}
             preencha seus dados abaixo:
           </p>
@@ -61,10 +82,16 @@ export function ConfirmTripModal({
               onChange={(event) => setOwnerEmail(event.target.value)}
             />
           </div>
-
-          <Button type="submit" variant="primary" size="full">
-            Confirmar criação da viagem
-          </Button>
+          {loading ? (
+            <Button type="submit" variant="primary" size="full">
+              Confirmando
+              <Loader2 className="size-5 animate-spin" />
+            </Button>
+          ) : (
+            <Button type="submit" variant="primary" size="full">
+              Confirmar criação da viagem
+            </Button>
+          )}
         </form>
       </div>
     </div>

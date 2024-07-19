@@ -12,6 +12,7 @@ export function CreateTripPage() {
   const [isGestsInputOpen, setIsGestsInputOpen] = useState(false);
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
   const [isConfirmTripModalOpen, setIsConfirmTripModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [destination, setDestination] = useState("");
   const [ownerName, setOwnerName] = useState("");
@@ -21,7 +22,6 @@ export function CreateTripPage() {
   >();
 
   const [emailsToInvite, setEmailsToInvite] = useState([
-    "diego@rocketseat.com.br",
     "jhondoe@acme.com",
   ]);
   function openGuestsInput() {
@@ -65,11 +65,6 @@ export function CreateTripPage() {
 
   async function createTrip(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log(destination);
-    console.log(eventStartAndEndDate);
-    console.log(emailsToInvite);
-    console.log(ownerName);
-    console.log(ownerEmail);
 
     if (!destination) {
       return;
@@ -83,7 +78,7 @@ export function CreateTripPage() {
     if (!ownerName || !ownerEmail) {
       return;
     }
-
+    setLoading(true);
     const response = await api.post("/trips", {
       destination,
       starts_at: eventStartAndEndDate.from,
@@ -92,7 +87,7 @@ export function CreateTripPage() {
       owner_name: ownerName,
       owner_email: ownerEmail,
     });
-
+    setLoading(false);
     const { tripId } = response.data;
 
     navigate(`/trips/${tripId}`);
@@ -153,6 +148,9 @@ export function CreateTripPage() {
           createTrip={createTrip}
           setOwnerName={setOwnerName}
           setOwnerEmail={setOwnerEmail}
+          loading={loading}
+          destination={destination}
+          eventStartAndEndDate={eventStartAndEndDate}
         />
       )}
     </div>
